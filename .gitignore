@@ -11,8 +11,9 @@ coverage.lcov
 dist
 
 # virtual environments
-venv
-.venv
+venv/
+.venv/
+env/
 
 # IDE-specific directories
 .vscode
