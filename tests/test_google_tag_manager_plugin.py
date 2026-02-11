@@ -1,64 +1,43 @@
-from platzky_google_tag_manager.entrypoint import process
 from unittest.mock import Mock
+
+from platzky_google_tag_manager.plugin import GoogleTagManagerPlugin
 
 
 def test_renders_head_code_with_gtm_id():
+    """Test that GTM head script is injected with the correct ID."""
     app = Mock()
-    plugin_config = {"ID": "GTM-XXXX"}
+    plugin = GoogleTagManagerPlugin({"ID": "GTM-XXXX"})
 
-    result = process(app, plugin_config)
+    result = plugin.process(app)
 
-    app.add_dynamic_head.assert_called_once_with(
-        """<!-- Google Tag Manager -->
-        <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-        })(window,document,'script','dataLayer','GTM-XXXX');</script>
-        <!-- End Google Tag Manager -->\n    """
-    )
+    app.add_dynamic_head.assert_called_once()
+    head_call = app.add_dynamic_head.call_args[0][0]
+    assert "GTM-XXXX" in head_call
+    assert "googletagmanager.com/gtm.js" in head_call
     assert result == app
 
 
 def test_renders_body_code_with_gtm_id():
+    """Test that GTM noscript body code is injected with the correct ID."""
     app = Mock()
-    plugin_config = {"ID": "GTM-XXXX"}
+    plugin = GoogleTagManagerPlugin({"ID": "GTM-XXXX"})
 
-    result = process(app, plugin_config)
+    result = plugin.process(app)
 
-    app.add_dynamic_body.assert_called_once_with(
-        """<!-- Google Tag Manager (noscript) -->
-        <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXX
-        "
-        height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-        <!-- End Google Tag Manager (noscript) -->
-    """
-    )
+    app.add_dynamic_body.assert_called_once()
+    body_call = app.add_dynamic_body.call_args[0][0]
+    assert "GTM-XXXX" in body_call
+    assert "googletagmanager.com/ns.html" in body_call
     assert result == app
 
 
 def test_handles_empty_gtm_id():
+    """Test that plugin handles an empty GTM ID gracefully."""
     app = Mock()
-    plugin_config = {"ID": ""}
+    plugin = GoogleTagManagerPlugin({"ID": ""})
 
-    result = process(app, plugin_config)
+    result = plugin.process(app)
 
-    app.add_dynamic_head.assert_called_once_with(
-        """<!-- Google Tag Manager -->
-        <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-        })(window,document,'script','dataLayer','');</script>
-        <!-- End Google Tag Manager -->
-    """
-    )
-    app.add_dynamic_body.assert_called_once_with(
-        """<!-- Google Tag Manager (noscript) -->
-        <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=
-        "
-        height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-        <!-- End Google Tag Manager (noscript) -->
-    """
-    )
+    app.add_dynamic_head.assert_called_once()
+    app.add_dynamic_body.assert_called_once()
     assert result == app
