@@ -23,6 +23,7 @@ html-cov: coverage
 	poetry run coverage html
 
 audit:
+	# Ignore deprecated 'py' package pulled in transitively; remove once no longer in dependency tree
 	poetry audit --ignore-package=py
 
 build:

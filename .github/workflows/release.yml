@@ -36,7 +36,7 @@ jobs:
     steps:
     - uses: actions/checkout@v6
     - name: Install Poetry
-      run: pip install poetry==2.0.1 poetry-audit-plugin
+      run: pip install poetry==2.0.1
     - name: Set up Python 3.10
       uses: actions/setup-python@v6
       with:
@@ -60,7 +60,7 @@ jobs:
     steps:
       - name: Generate bot app token
         id: generate_token
-        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf
+        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2.2.1
         with:
           app-id: ${{ secrets.MY_RELEASER_ID }}
           private-key: ${{ secrets.MY_RELEASER_PRIVATE_KEY }}
@@ -85,7 +85,7 @@ jobs:
 
       - name: Semantic Version Release
         id: release
-        uses: python-semantic-release/python-semantic-release@350c48fcb3ffcdfd2e0a235206bc2ecea6b69df0
+        uses: python-semantic-release/python-semantic-release@350c48fcb3ffcdfd2e0a235206bc2ecea6b69df0 # v10.5.3
         with:
           github_token: ${{ steps.generate_token.outputs.token }}
           git_committer_name: "semantic-release"
@@ -97,7 +97,7 @@ jobs:
         run: poetry build
 
       - name: Upload to GitHub Release Assets
-        uses: python-semantic-release/publish-action@310a9983a0ae878b29f3aac778d7c77c1db27378
+        uses: python-semantic-release/publish-action@310a9983a0ae878b29f3aac778d7c77c1db27378 # v10.5.3
         if: steps.release.outputs.released == 'true'
         with:
           github_token: ${{ steps.generate_token.outputs.token }}
@@ -132,6 +132,6 @@ jobs:
           path: dist
 
       - name: Publish package to PyPI
-        uses: pypa/gh-action-pypi-publish@ed0c53931b1dc9bd32cbe73a98c7f6766f8a527e
+        uses: pypa/gh-action-pypi-publish@ed0c53931b1dc9bd32cbe73a98c7f6766f8a527e # v1.13.0
         with:
           packages-dir: dist

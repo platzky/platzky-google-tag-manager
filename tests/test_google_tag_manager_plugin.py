@@ -1,5 +1,8 @@
 from unittest.mock import Mock
 
+import pytest
+from platzky.plugin.plugin import ConfigPluginError
+
 from platzky_google_tag_manager.plugin import GoogleTagManagerPlugin
 
 
@@ -31,13 +34,7 @@ def test_renders_body_code_with_gtm_id():
     assert result == app
 
 
-def test_handles_empty_gtm_id():
-    """Test that plugin handles an empty GTM ID gracefully."""
-    app = Mock()
-    plugin = GoogleTagManagerPlugin({"ID": ""})
-
-    result = plugin.process(app)
-
-    app.add_dynamic_head.assert_called_once()
-    app.add_dynamic_body.assert_called_once()
-    assert result == app
+def test_rejects_empty_gtm_id():
+    """Test that plugin raises validation error for empty GTM ID."""
+    with pytest.raises(ConfigPluginError, match="GTM ID must not be empty"):
+        GoogleTagManagerPlugin({"ID": ""})
