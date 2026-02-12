@@ -42,12 +42,15 @@ class GoogleTagManagerPlugin(PluginBase[GoogleTagManagerConfig]):
             "'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);\n"
             "})(window,document,'script','dataLayer','" + gtm_id + "');</script>\n"
             "<!-- End Google Tag Manager -->\n"
+        )
+        app.add_dynamic_head(head_code)
+
         body = (
-            '<!-- Google Tag Manager (noscript) -->\n'
+            "<!-- Google Tag Manager (noscript) -->\n"
             '<noscript><iframe src="https://www.googletagmanager.com/ns.html?id='
-             gtm_id
-             '" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>\n'
-            '<!-- End Google Tag Manager (noscript) -->\n'
+            + gtm_id
+            + '" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>\n'
+            "<!-- End Google Tag Manager (noscript) -->\n"
         )
         app.add_dynamic_body(body)
 
