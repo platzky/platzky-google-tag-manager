@@ -34,7 +34,37 @@ def test_renders_body_code_with_gtm_id():
     assert result == app
 
 
-def test_rejects_empty_gtm_id():
-    """Test that plugin raises validation error for empty GTM ID."""
-    with pytest.raises(ConfigPluginError, match="GTM ID must not be empty"):
-        GoogleTagManagerPlugin({"ID": ""})
+@pytest.mark.parametrize(
+    "invalid_id",
+    [
+        "",
+        "invalid",
+        "');alert(1);//",
+        "GTM-",
+        "gtm-ABC123",
+        "XYZ-123456",
+    ],
+)
+def test_rejects_invalid_gtm_id(invalid_id: str):
+    """Test that plugin raises validation error for invalid GTM IDs."""
+    with pytest.raises(ConfigPluginError, match="Invalid GTM ID"):
+        GoogleTagManagerPlugin({"ID": invalid_id})
+
+
+@pytest.mark.parametrize(
+    "valid_id",
+    [
+        "GTM-ABC123",
+        "G-ABC123DEF",
+        "AW-123456789",
+        "DC-ABCDEF",
+    ],
+)
+def test_accepts_valid_gtm_id(valid_id: str):
+    """Test that plugin accepts valid Google tag ID formats."""
+    app = Mock()
+    plugin = GoogleTagManagerPlugin({"ID": valid_id})
+
+    result = plugin.process(app)
+
+    assert result == app

@@ -1,10 +1,13 @@
 """Platzky Google Tag Manager plugin — injects GTM tracking code into pages."""
 
+import re
 from typing import cast
 
 from platzky.engine import Engine
 from platzky.plugin.plugin import PluginBase, PluginBaseConfig
 from pydantic import field_validator
+
+GTM_ID_PATTERN = re.compile(r"^(GTM|G|AW|DC)-[A-Z0-9]+$")
 
 
 class GoogleTagManagerConfig(PluginBaseConfig):
@@ -14,10 +17,13 @@ class GoogleTagManagerConfig(PluginBaseConfig):
 
     @field_validator("ID")
     @classmethod
-    def id_must_not_be_empty(cls, v: str) -> str:
-        """Validate that the GTM ID is not empty."""
-        if not v.strip():
-            raise ValueError("GTM ID must not be empty")
+    def id_must_be_valid_gtm_format(cls, v: str) -> str:
+        """Validate that the ID matches a known Google tag format."""
+        if not GTM_ID_PATTERN.match(v):
+            raise ValueError(
+                f"Invalid GTM ID '{v}'."
+                " Expected format: GTM-XXXXXX, G-XXXXXXX, AW-XXXXXXX, or DC-XXXXXXX"
+            )
         return v
 
 
