@@ -1,3 +1,5 @@
+.PHONY: lint dev lint-check unit-tests coverage html-cov audit build
+
 lint:
 	poetry run black .
 	poetry run ruff check --fix .

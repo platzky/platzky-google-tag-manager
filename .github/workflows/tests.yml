@@ -9,14 +9,7 @@ on:
       - 'docs/**'
       - 'LICENSE'
       - '.gitignore'
-  push:
-    branches:
-      - main
-    paths-ignore:
-      - '**.md'
-      - 'docs/**'
-      - 'LICENSE'
-      - '.gitignore'
+  workflow_call:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -27,40 +20,7 @@ permissions:
 
 jobs:
   lint:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v6
-    - name: Install Poetry
-      run: pip install poetry==2.0.1 poetry-audit-plugin
-    - name: Set up Python 3.10
-      uses: actions/setup-python@v6
-      with:
-        python-version: "3.10"
-        cache: 'poetry'
-    - name: Install dependencies
-      run: poetry install
-    - name: Run linters
-      run: make lint-check
-    - name: Security audit
-      run: make audit
+    uses: ./.github/workflows/lint.yml
 
   test:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v6
-    - name: Install Poetry
-      run: pip install poetry==2.0.1
-    - name: Set up Python 3.10
-      uses: actions/setup-python@v6
-      with:
-        python-version: "3.10"
-        cache: 'poetry'
-    - name: Install dependencies
-      run: poetry install
-    - name: Run tests with coverage
-      run: make coverage
-    - name: Coveralls
-      uses: coverallsapp/github-action@v2
-      with:
-        path-to-lcov: "./coverage.lcov"
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+    uses: ./.github/workflows/test.yml
