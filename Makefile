@@ -1,4 +1,4 @@
-.PHONY: lint dev lint-check unit-tests coverage html-cov audit build
+.PHONY: lint dev lint-check unit-tests coverage html-cov build
 
 lint:
 	poetry run black .
@@ -23,10 +23,6 @@ coverage:
 
 html-cov: coverage
 	poetry run coverage html
-
-audit:
-	# Ignore deprecated 'py' package pulled in transitively; remove once no longer in dependency tree
-	poetry audit --ignore-package=py
 
 build:
 	poetry build

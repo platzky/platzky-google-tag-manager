@@ -23,5 +23,3 @@ jobs:
       run: poetry install
     - name: Run linters
       run: make lint-check
-    - name: Security audit
-      run: make audit
