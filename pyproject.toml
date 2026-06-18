@@ -10,6 +10,9 @@ readme = "README.md"
 python = "^3.14"
 platzky = "^2.0.0a4"
 
+[tool.poetry.plugins."platzky.plugins"]
+google-tag-manager = "platzky_google_tag_manager:GoogleTagManagerPlugin"
+
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.4"
 black = "^26.5.1"
