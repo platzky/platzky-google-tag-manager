@@ -28,8 +28,7 @@ def test_accepted_page_sections():
     """Test that the plugin declares both head and body as accepted sections."""
     plugin = GoogleTagManagerPlugin({"ID": "GTM-XXXX"})
 
-    assert "head" in plugin.accepted_page_sections
-    assert "body" in plugin.accepted_page_sections
+    assert plugin.accepted_page_sections == frozenset({"head", "body"})
 
 
 @pytest.mark.parametrize(

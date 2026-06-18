@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   tests:
     uses: ./.github/workflows/tests.yml
@@ -26,6 +30,8 @@ jobs:
         with:
           client-id: ${{ secrets.MY_RELEASER_ID }}
           private-key: ${{ secrets.MY_RELEASER_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
 
       - uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
         id: release
@@ -49,6 +55,7 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           ref: ${{ needs.release.outputs.tag_name }}
+          persist-credentials: false
 
       - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
