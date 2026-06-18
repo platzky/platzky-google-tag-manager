@@ -1,17 +1,17 @@
 """Platzky Google Tag Manager plugin — injects GTM tracking code into pages."""
 
 import re
-from typing import cast
+from typing import Any
 
-from platzky.engine import Engine
-from platzky.plugin.plugin import PluginBase, PluginBaseConfig
-from pydantic import field_validator
+from platzky.plugin.html_injector import HtmlInjectorPluginBase
+from platzky.plugin.plugin import ConfigPluginError
+from pydantic import BaseModel, ValidationError, field_validator
 
 GTM_ID_PATTERN = re.compile(r"^(GTM|G|AW|DC)-[A-Z0-9]+$")
 
 
-class GoogleTagManagerConfig(PluginBaseConfig):
-    """Configuration model for the Google Tag Manager plugin."""
+class _Config(BaseModel):
+    """Internal config model for the Google Tag Manager plugin."""
 
     ID: str
 
@@ -27,20 +27,23 @@ class GoogleTagManagerConfig(PluginBaseConfig):
         return v
 
 
-class GoogleTagManagerPlugin(PluginBase[GoogleTagManagerConfig]):
+class GoogleTagManagerPlugin(HtmlInjectorPluginBase):
     """Platzky plugin that injects Google Tag Manager tracking code."""
 
-    @classmethod
-    def get_config_model(cls) -> type[GoogleTagManagerConfig]:
-        """Return the config model class for this plugin."""
-        return GoogleTagManagerConfig
+    accepted_page_sections = frozenset({"head", "body"})
 
-    def process(self, app: Engine) -> Engine:
-        """Inject GTM tracking scripts into the app's dynamic head and body."""
-        config = cast(GoogleTagManagerConfig, self.config)
-        gtm_id = config.ID
+    def __init__(self, config: dict[str, Any]) -> None:
+        super().__init__(config)
+        try:
+            validated = _Config.model_validate(config)
+        except ValidationError as e:
+            raise ConfigPluginError(str(e)) from e
+        self._gtm_id = validated.ID
 
-        head_code = (
+    def get_head_html(self) -> str:
+        """Return the GTM script tag for injection into ``<head>``."""
+        gtm_id = self._gtm_id
+        return (
             "<!-- Google Tag Manager -->\n"
             "<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':\n"
             "new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],\n"
@@ -49,15 +52,14 @@ class GoogleTagManagerPlugin(PluginBase[GoogleTagManagerConfig]):
             "})(window,document,'script','dataLayer','" + gtm_id + "');</script>\n"
             "<!-- End Google Tag Manager -->\n"
         )
-        app.add_dynamic_head(head_code)
 
-        body = (
+    def get_body_html(self) -> str:
+        """Return the GTM noscript iframe for injection at the start of ``<body>``."""
+        gtm_id = self._gtm_id
+        return (
             "<!-- Google Tag Manager (noscript) -->\n"
             '<noscript><iframe src="https://www.googletagmanager.com/ns.html?id='
             + gtm_id
             + '" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>\n'
             "<!-- End Google Tag Manager (noscript) -->\n"
         )
-        app.add_dynamic_body(body)
-
-        return app
