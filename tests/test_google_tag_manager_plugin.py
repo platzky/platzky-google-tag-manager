@@ -1,37 +1,34 @@
-from unittest.mock import Mock
-
 import pytest
 from platzky.plugin.plugin import ConfigPluginError
 
 from platzky_google_tag_manager.plugin import GoogleTagManagerPlugin
 
 
-def test_renders_head_code_with_gtm_id():
-    """Test that GTM head script is injected with the correct ID."""
-    app = Mock()
+def test_get_head_html_contains_gtm_id():
+    """Test that GTM head script contains the correct tracking ID."""
     plugin = GoogleTagManagerPlugin({"ID": "GTM-XXXX"})
 
-    result = plugin.process(app)
+    head = plugin.get_head_html()
 
-    app.add_dynamic_head.assert_called_once()
-    head_call = app.add_dynamic_head.call_args[0][0]
-    assert "GTM-XXXX" in head_call
-    assert "googletagmanager.com/gtm.js" in head_call
-    assert result == app
+    assert "GTM-XXXX" in head
+    assert "googletagmanager.com/gtm.js" in head
 
 
-def test_renders_body_code_with_gtm_id():
-    """Test that GTM noscript body code is injected with the correct ID."""
-    app = Mock()
+def test_get_body_html_contains_gtm_id():
+    """Test that GTM noscript body code contains the correct tracking ID."""
     plugin = GoogleTagManagerPlugin({"ID": "GTM-XXXX"})
 
-    result = plugin.process(app)
+    body = plugin.get_body_html()
 
-    app.add_dynamic_body.assert_called_once()
-    body_call = app.add_dynamic_body.call_args[0][0]
-    assert "GTM-XXXX" in body_call
-    assert "googletagmanager.com/ns.html" in body_call
-    assert result == app
+    assert "GTM-XXXX" in body
+    assert "googletagmanager.com/ns.html" in body
+
+
+def test_accepted_page_sections():
+    """Test that the plugin declares both head and body as accepted sections."""
+    plugin = GoogleTagManagerPlugin({"ID": "GTM-XXXX"})
+
+    assert plugin.accepted_page_sections == frozenset({"head", "body"})
 
 
 @pytest.mark.parametrize(
@@ -62,9 +59,7 @@ def test_rejects_invalid_gtm_id(invalid_id: str):
 )
 def test_accepts_valid_gtm_id(valid_id: str):
     """Test that plugin accepts valid Google tag ID formats."""
-    app = Mock()
     plugin = GoogleTagManagerPlugin({"ID": valid_id})
 
-    result = plugin.process(app)
-
-    assert result == app
+    assert valid_id in plugin.get_head_html()
+    assert valid_id in plugin.get_body_html()
