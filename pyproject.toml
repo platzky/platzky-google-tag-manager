@@ -16,9 +16,9 @@ google-tag-manager = "platzky_google_tag_manager:GoogleTagManagerPlugin"
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.4"
 black = "^26.5.1"
-ruff = "^0.15.17"
-pyright = "^1.1.390"
-coverage = "^7.6.9"
+ruff = "^0.15.20"
+pyright = "^1.1.411"
+coverage = "^7.14.3"
 interrogate = "^1.7.0"
 
 [tool.black]
