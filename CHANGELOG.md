@@ -2,6 +2,13 @@
 
 <!-- version list -->
 
+## [0.2.2](https://github.com/platzky/platzky-google-tag-manager/compare/v0.2.1...v0.2.2) (2026-07-07)
+
+
+### Bug Fixes
+
+* entrypoint of plugin correction ([#21](https://github.com/platzky/platzky-google-tag-manager/issues/21)) ([5628d5d](https://github.com/platzky/platzky-google-tag-manager/commit/5628d5d5f4e4fe07ee2f7beb97f522dcfc2c66cb))
+
 ## [0.2.1](https://github.com/platzky/platzky-google-tag-manager/compare/v0.2.0...v0.2.1) (2026-06-18)
 
 
