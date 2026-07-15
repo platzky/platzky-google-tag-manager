@@ -63,3 +63,45 @@ def test_accepts_valid_gtm_id(valid_id: str):
 
     assert valid_id in plugin.get_head_html()
     assert valid_id in plugin.get_body_html()
+
+
+def test_get_head_html_without_consent_default_omits_consent_script():
+    """Test that no consent script is emitted when CONSENT_DEFAULT is unset."""
+    plugin = GoogleTagManagerPlugin({"ID": "GTM-XXXX"})
+
+    head = plugin.get_head_html()
+
+    assert "consent" not in head.lower()
+
+
+def test_get_head_html_with_consent_default_precedes_gtm_script():
+    """Test that the consent default script is emitted before the GTM script."""
+    plugin = GoogleTagManagerPlugin(
+        {
+            "ID": "GTM-XXXX",
+            "CONSENT_DEFAULT": {
+                "ad_storage": "denied",
+                "analytics_storage": "denied",
+            },
+        }
+    )
+
+    head = plugin.get_head_html()
+
+    assert "gtag('consent', 'default'," in head
+    assert '"ad_storage": "denied"' in head
+    assert '"analytics_storage": "denied"' in head
+    assert head.index("gtag('consent', 'default',") < head.index("Google Tag Manager -->")
+
+
+@pytest.mark.parametrize(
+    "invalid_consent_default",
+    [
+        {"ad_storage": "maybe"},
+        {"not_a_real_consent_type": "granted"},
+    ],
+)
+def test_rejects_invalid_consent_default(invalid_consent_default: dict[str, str]):
+    """Test that plugin raises validation error for malformed consent defaults."""
+    with pytest.raises(ConfigPluginError):
+        GoogleTagManagerPlugin({"ID": "GTM-XXXX", "CONSENT_DEFAULT": invalid_consent_default})
