@@ -2,6 +2,13 @@
 
 <!-- version list -->
 
+## [0.2.3](https://github.com/platzky/platzky-google-tag-manager/compare/v0.2.2...v0.2.3) (2026-07-15)
+
+
+### Features
+
+* consent mode added ([c508009](https://github.com/platzky/platzky-google-tag-manager/commit/c5080093564fc0aee415d2dab0a1e24432070069))
+
 ## [0.2.2](https://github.com/platzky/platzky-google-tag-manager/compare/v0.2.1...v0.2.2) (2026-07-07)
 
 
