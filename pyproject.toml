@@ -14,7 +14,7 @@ platzky = "^2.0.0a4"
 google_tag_manager = "platzky_google_tag_manager:GoogleTagManagerPlugin"
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^8.3.4"
+pytest = "^9.1.1"
 black = "^26.5.1"
 ruff = "^0.15.20"
 pyright = "^1.1.411"
