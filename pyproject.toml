@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "platzky_google_tag_manager"
-version = "0.2.2"
+version = "0.2.3"
 description = ""
 authors = []
 license = "MIT"
