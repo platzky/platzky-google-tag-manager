@@ -1680,14 +1680,14 @@ type = ["mypy (>=1.18.2)"]
 
 [[package]]
 name = "platzky"
-version = "2.0.0a4"
+version = "2.0.0a11"
 description = "Not only blog engine"
 optional = false
 python-versions = "<4.0,>=3.10"
 groups = ["main"]
 files = [
-    {file = "platzky-2.0.0a4-py3-none-any.whl", hash = "sha256:fe7b6e48c4c23bbdb02d17a039921ca7c9fb41a079b9cb1f5562a2adc1b3d76e"},
-    {file = "platzky-2.0.0a4.tar.gz", hash = "sha256:fa970c5e777f801ca86594dae28e28ab5a0dfd5293171ce21612685b2f4a710c"},
+    {file = "platzky-2.0.0a11-py3-none-any.whl", hash = "sha256:865d8d03356dc0d1f02356ec58db66c3ecaac294063f6f01a76892ad48e2e470"},
+    {file = "platzky-2.0.0a11.tar.gz", hash = "sha256:643aa1197c78257e37df1a308b9ff51565254c913114bd73df2950e7deeac037"},
 ]
 
 [package.dependencies]
@@ -3064,4 +3064,4 @@ propcache = ">=0.2.1"
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.14"
-content-hash = "9a8fd57b5b59ce38b9c835c149550cd3698a72402ec61b627aa2b544247216e8"
+content-hash = "6d7a8f5a6dca1243b7976c57e911ecbee07b5eaa66f457db082ec03c24c7b6df"
